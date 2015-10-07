@@ -14,7 +14,7 @@ protected:
 	Vec2 pos;
 	double rad, size;
 	int hp;
-	int frameCount, fireCount;
+	int frameCount, fireCount, damageCount;
 };
 
 class TestEnemy : public Enemy {

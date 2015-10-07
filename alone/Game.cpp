@@ -41,13 +41,15 @@ void Game::draw() {
 	enemyManager->draw(this);
 	bulletManager->draw(this);
 	drawHUD();
+
+	Graphics2D::SetTransform(Mat3x2::Translate(Vec2(0.0, 0.0)));
 }
 
 void Game::drawHUD() {
 }
 
 void Game::drawBackground() {
-	for (auto i : step(100)) {
-		RectF(RandomVec2(640, 480).asPoint(), 40, 40).drawFrame(2.0, 0.0, Color(255, 255, 255, 127));
+	for (auto i : step(30)) {
+		RectF(RandomVec2(640, 480).asPoint(), 40, 40).drawFrame(1.0, 0.0, Color(255, 255, 255, 127));
 	}
 }

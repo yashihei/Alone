@@ -23,7 +23,7 @@ void Shot::update(Game* game) {
 }
 
 void Shot::draw(Game* game) {
-	Circle(pos, size).draw(Color(Palette::Orange).setAlpha(200)).drawFrame(0.0, 2.0);
+	Circle(pos, size).draw(Color(Palette::Orange).setAlpha(200)).drawFrame(0.0, 1.0);
 }
 
 Player::Player() :
@@ -53,7 +53,7 @@ void Player::update(Game* game) {
 	//move
 	if (!Vec2(pad.leftThumbX, -pad.leftThumbY).isZero) {
 		rad = Atan2(-pad.leftThumbY, pad.leftThumbX);
-		pos += Vec2(Cos(rad), Sin(rad)) * 10.0;
+		pos += Vec2(Cos(rad), Sin(rad)) * 7.5;
 	}
 	pos = Vec2(Clamp(pos.x, 0.0, static_cast<double>(Game::stageSize.x)), Clamp(pos.y, 0.0, static_cast<double>(Game::stageSize.y)));
 
@@ -80,7 +80,7 @@ void Player::checkBulletHit(Game* game) {
 }
 
 void Player::draw(Game* game) {
-	Triangle(pos, 30.0).rotated(rad + Radians(90)).draw(Color(150, 150, 255, 123)).drawFrame(2.0);
+	Triangle(pos, 30.0).rotated(rad + Radians(90)).draw(Color(150, 150, 255, 123)).drawFrame(1.0);
 	Line(pos, pos + Vec2(Cos(rad), Sin(rad)) * 1000.0).draw();
 	Line(pos, pos + Vec2(Cos(shotRad), Sin(shotRad)) * 1000.0).draw(Palette::Lightblue);
 	shotManager->draw(game);

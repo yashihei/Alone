@@ -8,7 +8,7 @@ Enemy::Enemy() :
 pos(0.0, 0.0),
 rad(0.0), size(0.0),
 hp(0),
-frameCount(0), fireCount(0)
+frameCount(0), fireCount(0), damageCount(10)
 {}
 
 void Enemy::set(Vec2 pos) {
@@ -16,7 +16,7 @@ void Enemy::set(Vec2 pos) {
 }
 
 void Enemy::update(Game* game) {
-	frameCount++; fireCount++;
+	frameCount++; fireCount++; damageCount++;
 
 	if (pos.x > Game::stageSize.x || pos.x < 0 || pos.y > Game::stageSize.y || pos.y < 0) {
 		kill();
@@ -26,6 +26,7 @@ void Enemy::update(Game* game) {
 	for (auto& shot : *shotManager) {
 		if (Circle(pos, size).intersects(Circle(shot->getPos(), shot->getSize()))) {
 			hp--;
+			damageCount = 0;
 			shot->kill();
 		}
 	}
@@ -35,7 +36,8 @@ void Enemy::update(Game* game) {
 }
 
 void Enemy::draw(Game* game) {
-	RectF(size * 2).setCenter(pos).rotated(rad).draw(Color(Palette::Yellow).setAlpha(123)).drawFrame();
+	Color c = damageCount < 10 ? Color(255, 200) : Color(Palette::Yellow).setAlpha(123);
+	RectF(size * 2).setCenter(pos).rotated(rad).draw(c).drawFrame();
 }
 
 TestEnemy::TestEnemy() {
