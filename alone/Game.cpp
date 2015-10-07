@@ -4,7 +4,7 @@
 #include "Bullet.h"
 #include "Enemy.h"
 
-const Size Game::stageSize = Size(640, 480);
+const Size Game::stageSize = Size(1000, 1000);
 
 Game::Game() {
 	player = std::make_shared<Player>();
@@ -12,6 +12,7 @@ Game::Game() {
 	enemyManager = std::make_shared<EnemyManager>();
 
 	player->start();
+	offset = Vec2(0.0, 0.0);
 	Graphics2D::SetBlendState(BlendState::Additive);
 }
 
@@ -25,12 +26,14 @@ void Game::update() {
 	bulletManager->update(this);
 
 	createActors();
+	offset = Vec2(Window::Width() / 2 - player->getPos().x, Window::Height() / 2 - player->getPos().y);
+	Graphics2D::SetTransform(Mat3x2::Translate(offset));
 }
 
 void Game::createActors() {
 	if (Input::Key1.clicked) {
 		auto enemy = std::make_shared<TestEnemy>();
-		enemy->set(Mouse::Pos());
+		enemy->set(RandomVec2(stageSize.x, stageSize.y));
 		enemyManager->add(enemy);
 	}
 }
@@ -41,8 +44,6 @@ void Game::draw() {
 	enemyManager->draw(this);
 	bulletManager->draw(this);
 	drawHUD();
-
-	Graphics2D::SetTransform(Mat3x2::Translate(Vec2(0.0, 0.0)));
 }
 
 void Game::drawHUD() {
@@ -50,6 +51,7 @@ void Game::drawHUD() {
 
 void Game::drawBackground() {
 	for (auto i : step(30)) {
-		RectF(RandomVec2(640, 480).asPoint(), 40, 40).drawFrame(1.0, 0.0, Color(255, 255, 255, 127));
+		RectF(RandomVec2(stageSize.x, stageSize.y).asPoint(), 40, 40).drawFrame(1.0, 0.0, Color(255, 255, 255, 127));
 	}
+	Rect(stageSize).drawFrame(1.0, 0.0, Palette::Red);
 }
