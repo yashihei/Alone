@@ -35,7 +35,7 @@ void Enemy::update(Game* game) {
 }
 
 void Enemy::draw(Game* game) {
-	RectF(size * 2).setCenter(pos).rotated(rad).draw(Color(100)).drawFrame();
+	RectF(size * 2).setCenter(pos).rotated(rad).draw(Color(Palette::Yellow).setAlpha(123)).drawFrame();
 }
 
 TestEnemy::TestEnemy() {
@@ -54,7 +54,7 @@ void TestEnemy::update(Game* game) {
 			double shotRad = Atan2(playerPos.y - pos.y, playerPos.x - pos.x);
 			shotRad += Radians(30) * i;
 			auto bullet = std::make_shared<Bullet>();
-			bullet->set(pos, Palette::Hotpink, shotRad, 8.0, -0.1);
+			bullet->set(pos, Color(255, 100, 100), shotRad, 8.0, 0.0);
 			bulletManager->add(bullet);
 		}
 	}

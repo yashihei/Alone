@@ -23,7 +23,7 @@ void Shot::update(Game* game) {
 }
 
 void Shot::draw(Game* game) {
-	Circle(pos, size).draw(Palette::Orange).drawFrame(0.0, 2.0);
+	Circle(pos, size).draw(Color(Palette::Orange).setAlpha(200)).drawFrame(0.0, 2.0);
 }
 
 Player::Player() :
@@ -47,12 +47,8 @@ void Player::update(Game* game) {
 	stateCount++;
 
 	auto pad = XInput(0);
-
 	pad.setLeftThumbDeadZone();
 	pad.setRightThumbDeadZone();
-
-	Println(pad.rightThumbX, L",", pad.rightThumbY);
-	Println(pad.leftThumbX, L",", pad.leftThumbY);
 
 	//move
 	if (!Vec2(pad.leftThumbX, -pad.leftThumbY).isZero) {
@@ -84,7 +80,7 @@ void Player::checkBulletHit(Game* game) {
 }
 
 void Player::draw(Game* game) {
-	Triangle(pos, 30.0).rotated(rad + Radians(90)).draw(Color(Palette::Yellow).setAlpha(123)).drawFrame(2.0);
+	Triangle(pos, 30.0).rotated(rad + Radians(90)).draw(Color(150, 150, 255, 123)).drawFrame(2.0);
 	Line(pos, pos + Vec2(Cos(rad), Sin(rad)) * 1000.0).draw();
 	Line(pos, pos + Vec2(Cos(shotRad), Sin(shotRad)) * 1000.0).draw(Palette::Lightblue);
 	shotManager->draw(game);

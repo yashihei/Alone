@@ -31,5 +31,5 @@ void Bullet::update(Game* game) {
 }
 
 void Bullet::draw(Game* game) {
-	Circle(pos, size).draw(color).drawFrame(0.0, 2.0);
+	Circle(pos, size).draw(color.setAlpha(200)).drawFrame(0.0, 2.0);
 }

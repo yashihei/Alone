@@ -12,6 +12,7 @@ Game::Game() {
 	enemyManager = std::make_shared<EnemyManager>();
 
 	player->start();
+	Graphics2D::SetBlendState(BlendState::Additive);
 }
 
 void Game::update() {
@@ -27,6 +28,11 @@ void Game::update() {
 }
 
 void Game::createActors() {
+	if (Input::Key1.clicked) {
+		auto enemy = std::make_shared<TestEnemy>();
+		enemy->set(Mouse::Pos());
+		enemyManager->add(enemy);
+	}
 }
 
 void Game::draw() {
