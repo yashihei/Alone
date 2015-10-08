@@ -36,7 +36,7 @@ stateCount(0), fireCount(0)
 }
 
 void Player::start() {
-	pos = Vec2(Game::stageSize.x / 2, 420);
+	pos = Vec2(Game::stageSize.x / 2, Game::stageSize.y / 2);
 	state = State::NORMAL;
 	rad = shotRad = 0.0;
 	stateCount = fireCount = 0;

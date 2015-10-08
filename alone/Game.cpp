@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "Effect.h"
 
 const Size Game::stageSize = Size(1000, 1000);
 
@@ -26,6 +27,7 @@ void Game::update() {
 	bulletManager->update(this);
 
 	createActors();
+
 	offset = Vec2(Window::Width() / 2 - player->getPos().x, Window::Height() / 2 - player->getPos().y);
 	Graphics2D::SetTransform(Mat3x2::Translate(offset));
 }

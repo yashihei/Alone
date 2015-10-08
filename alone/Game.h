@@ -21,7 +21,6 @@ public:
 	std::shared_ptr<EnemyManager> getEnemyManager() const { return enemyManager; }
 
 	static const Size stageSize;
-	Vec2 offset;
 private:
 	void createActors();
 	void drawHUD();
@@ -30,4 +29,6 @@ private:
 	std::shared_ptr<Player> player;
 	std::shared_ptr<BulletManager> bulletManager;
 	std::shared_ptr<EnemyManager> enemyManager;
+
+	Vec2 offset;
 };

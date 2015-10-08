@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Bullet.h"
 #include "Player.h"
+#include "Effect.h"
 
 Enemy::Enemy() :
 pos(0.0, 0.0),
