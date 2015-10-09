@@ -8,8 +8,9 @@ class Enemy : public Actor {
 public:
 	Enemy();
 	void update(Game* game) override;
-	void draw(Game* game) override;
 	void set(Vec2 pos);
+
+	Vec2 getPos() const { return pos; }
 protected:
 	Vec2 pos;
 	double rad, size;
@@ -22,4 +23,13 @@ public:
 	using Super = Enemy;
 	TestEnemy();
 	void update(Game* game) override;
+	void draw(Game* game) override;
+};
+
+class MiddleEnemy : public Enemy {
+public:
+	using Super = Enemy;
+	MiddleEnemy();
+	void update(Game* game) override;
+	void draw(Game* game) override;
 };

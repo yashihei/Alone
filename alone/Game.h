@@ -31,4 +31,5 @@ private:
 	std::shared_ptr<EnemyManager> enemyManager;
 
 	Vec2 offset;
+	Effect effect;
 };

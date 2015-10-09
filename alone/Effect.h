@@ -11,9 +11,12 @@ public:
 	bool update(double sec);
 };
 
-class Particle : public IEffect
+class CircleEffect : public IEffect
 {
 private:
+	Vec2 pos;
+	double size;
 public:
+	CircleEffect(Vec2 pos, double size);
 	bool update(double sec);
 };

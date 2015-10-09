@@ -36,11 +36,6 @@ void Enemy::update(Game* game) {
 	}
 }
 
-void Enemy::draw(Game* game) {
-	Color c = damageCount < 10 ? Color(255, 200) : Color(Palette::Yellow).setAlpha(123);
-	RectF(size * 2).setCenter(pos).rotated(rad).draw(c).drawFrame();
-}
-
 TestEnemy::TestEnemy() {
 	hp = 10;
 	size = 15.0;
@@ -51,7 +46,7 @@ void TestEnemy::update(Game* game) {
 	rad += Radians(3.0);
 
 	auto bulletManager = game->getBulletManager();
-	Vec2 playerPos = game->getPlayer()->getPos();
+	const Vec2 playerPos = game->getPlayer()->getPos();
 	if (fireCount % 15 == 0) {
 		for (auto i : step_to(-2, 2, 1)) {
 			double shotRad = Atan2(playerPos.y - pos.y, playerPos.x - pos.x);
@@ -61,4 +56,38 @@ void TestEnemy::update(Game* game) {
 			bulletManager->add(bullet);
 		}
 	}
+}
+
+void TestEnemy::draw(Game* game) {
+	Color c = damageCount < 10 ? Color(255, 200) : Color(Palette::Yellow).setAlpha(123);
+	RectF(size * 2).setCenter(pos).rotated(rad).draw(c).drawFrame();
+}
+
+MiddleEnemy::MiddleEnemy() {
+	hp = 30;
+	size = 30.0;
+}
+
+void MiddleEnemy::update(Game* game) {
+	Super::update(game);
+	rad += Radians(10.0);
+
+	const Vec2 playerPos = game->getPlayer()->getPos();
+	const double rad2 = Atan2(playerPos.y - pos.y, playerPos.x - pos.x);
+
+	if (frameCount % 100 < 50) {
+		pos += Vec2(Cos(rad2), Sin(rad2)) * 3.0;
+	} else {
+		auto bullet = std::make_shared<Bullet>();
+		const double shotRad = rad2 + Radians(Random(-15.0, 15.0));
+		bullet->set(pos, Color(255, 100, 100), shotRad, Random(2.0, 7.0), 0.0);
+		game->getBulletManager()->add(bullet);
+	}
+}
+
+void MiddleEnemy::draw(Game* game) {
+	const Polygon polygon = Geometry2D::CreateNgon(6, 50);
+	Color c = damageCount < 10 ? Color(255, 200) : Color(Palette::Yellow).setAlpha(123);
+	polygon.rotated(rad).draw(pos, c);
+	polygon.rotated(rad).drawFrame(pos);
 }

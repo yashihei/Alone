@@ -9,3 +9,14 @@ bool ScreenShake::update(double timeSec) {
 	Graphics2D::SetTransform(Mat3x2::Translate(offset));
 	return timeMillisec < lengthMillSec;
 }
+
+CircleEffect::CircleEffect(Vec2 pos, double size) :
+pos(pos),
+size(size)
+{}
+
+bool CircleEffect::update(double sec) {
+	const double limitSec = 1.5;
+	Circle(pos, size *  sec).drawFrame();
+	return sec < limitSec;
+}
