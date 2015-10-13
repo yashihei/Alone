@@ -19,6 +19,7 @@ public:
 	std::shared_ptr<Player> getPlayer() const { return player; }
 	std::shared_ptr<BulletManager> getBulletManager() const { return bulletManager; }
 	std::shared_ptr<EnemyManager> getEnemyManager() const { return enemyManager; }
+	std::shared_ptr<Effect> getEffect() const { return effect; }
 
 	static const Size stageSize;
 private:
@@ -29,7 +30,7 @@ private:
 	std::shared_ptr<Player> player;
 	std::shared_ptr<BulletManager> bulletManager;
 	std::shared_ptr<EnemyManager> enemyManager;
+	std::shared_ptr<Effect> effect;
 
 	Vec2 offset;
-	Effect effect;
 };

@@ -11,6 +11,7 @@ Game::Game() {
 	player = std::make_shared<Player>();
 	bulletManager = std::make_shared<BulletManager>();
 	enemyManager = std::make_shared<EnemyManager>();
+	effect = std::make_shared<Effect>();
 
 	player->start();
 	offset = Vec2(0.0, 0.0);
@@ -31,12 +32,12 @@ void Game::update() {
 	offset = Vec2(Window::Width() / 2 - player->getPos().x, Window::Height() / 2 - player->getPos().y);
 	Graphics2D::SetTransform(Mat3x2::Translate(offset));
 
-	effect.update();
+	effect->update();
 	if (Input::Key2.pressed) {
-		effect.add<Snow>(player->getPos().asPoint(), 10);
+		effect->add<Snow>(player->getPos().asPoint(), 10);
 	}
 	if (Input::Key3.clicked) {
-		effect.add<CrashEffect>(player->getPos());
+		effect->add<CrashEffect>(player->getPos());
 	}
 }
 
@@ -75,7 +76,5 @@ void Game::drawBackground() {
 	for (auto i : step(30)) {
 		RectF(RandomVec2(stageSize.x, stageSize.y).asPoint(), 40, 40).drawFrame(1.0, 0.0, Color(255, 255, 255, 127));
 	}
-	for (auto i : step(10)) {
-		RectF(stageSize).drawFrame(0.0, i, Color(Palette::Red).setAlpha(30));
-	}
+	RectF(stageSize).drawFrame(0.0, 1.0, Color(Palette::Red));
 }

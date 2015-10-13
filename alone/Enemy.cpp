@@ -33,6 +33,7 @@ void Enemy::update(Game* game) {
 	}
 	if (hp <= 0) {
 		kill();
+		game->getEffect()->add<CrashEffect>(pos);
 	}
 }
 
