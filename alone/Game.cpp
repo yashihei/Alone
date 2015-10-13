@@ -32,18 +32,16 @@ void Game::update() {
 	Graphics2D::SetTransform(Mat3x2::Translate(offset));
 
 	effect.update();
-	if (Input::Key0.pressed) {
-		effect.add<CircleEffect>(player->getPos(), 30.0);
+	if (Input::Key2.pressed) {
+		effect.add<Snow>(player->getPos().asPoint(), 10);
+	}
+	if (Input::Key3.clicked) {
+		effect.add<CrashEffect>(player->getPos());
 	}
 }
 
 void Game::createActors() {
 	if (Input::Key1.clicked) {
-		auto enemy = std::make_shared<TestEnemy>();
-		enemy->set(RandomVec2(stageSize.x, stageSize.y));
-		enemyManager->add(enemy);
-	}
-	if (Input::Key2.clicked) {
 		auto enemy = std::make_shared<MiddleEnemy>();
 		enemy->set(RandomVec2(stageSize.x, stageSize.y));
 		enemyManager->add(enemy);
@@ -77,5 +75,7 @@ void Game::drawBackground() {
 	for (auto i : step(30)) {
 		RectF(RandomVec2(stageSize.x, stageSize.y).asPoint(), 40, 40).drawFrame(1.0, 0.0, Color(255, 255, 255, 127));
 	}
-	Rect(stageSize).drawFrame(1.0, 0.0, Palette::Red);
+	for (auto i : step(10)) {
+		RectF(stageSize).drawFrame(0.0, i, Color(Palette::Red).setAlpha(30));
+	}
 }

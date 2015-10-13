@@ -80,7 +80,7 @@ void Player::checkBulletHit(Game* game) {
 }
 
 void Player::draw(Game* game) {
-	Triangle(pos, 30.0).rotated(rad + Radians(90)).draw(Color(150, 150, 255, 123)).drawFrame(1.0);
+	Triangle(pos, 30.0).rotated(rad + Radians(90)).draw(Color(150, 150, 255, 122)).drawFrame();
 	Line(pos, pos + Vec2(Cos(rad), Sin(rad)) * 1000.0).draw();
 	Line(pos, pos + Vec2(Cos(shotRad), Sin(shotRad)) * 1000.0).draw(Palette::Lightblue);
 	shotManager->draw(game);
