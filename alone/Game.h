@@ -15,11 +15,13 @@ public:
 	Game();
 	void update();
 	void draw();
+	void drawLog(String str);
 
 	std::shared_ptr<Player> getPlayer() const { return player; }
 	std::shared_ptr<BulletManager> getBulletManager() const { return bulletManager; }
 	std::shared_ptr<EnemyManager> getEnemyManager() const { return enemyManager; }
 	std::shared_ptr<Effect> getEffect() const { return effect; }
+	void addScore(int score) { this->score += score; }
 
 	static const Size stageSize;
 private:
@@ -33,4 +35,5 @@ private:
 	std::shared_ptr<Effect> effect;
 
 	Vec2 offset;
+	int score;
 };

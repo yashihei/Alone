@@ -7,21 +7,23 @@
 
 const Size Game::stageSize = Size(1000, 1000);
 
-Game::Game() {
+Game::Game() :
+offset(0.0, 0.0), score(0)
+{
 	player = std::make_shared<Player>();
 	bulletManager = std::make_shared<BulletManager>();
 	enemyManager = std::make_shared<EnemyManager>();
 	effect = std::make_shared<Effect>();
 
 	player->start();
-	offset = Vec2(0.0, 0.0);
 	Graphics2D::SetBlendState(BlendState::Additive);
+	FontManager::Register(L"dat/orbitron-medium.otf");
+	FontAsset::Register(L"log", 10, L"Orbitron");
 }
 
 void Game::update() {
 	if (Input::KeySpace.pressed) return;
 	ClearPrint();
-	Println(L"FPS:", Profiler::FPS());
 
 	player->update(this);
 	enemyManager->update(this);
@@ -58,6 +60,10 @@ void Game::draw() {
 }
 
 void Game::drawHUD() {
+	Graphics2D::SetTransform(Mat3x2::Identity());
+	FontAsset(L"log").draw(Format(L"SCORE:", score), Vec2(5.0, 5.0), Palette::Lightgreen);
+	FontAsset(L"log").draw(Format(L"FPS:", Profiler::FPS()), Vec2(5.0, 25.0), Palette::Lightgreen);
+
 	//draw minimap
 	const Rect mapRect(100);
 	Graphics2D::SetTransform(Mat3x2::Translate(Vec2(Window::Width() - (mapRect.w + 20), 20)));
