@@ -16,6 +16,7 @@ offset(0.0, 0.0), score(0)
 	effect = std::make_shared<Effect>();
 
 	player->start();
+
 	Graphics2D::SetBlendState(BlendState::Additive);
 	FontManager::Register(L"dat/orbitron-medium.otf");
 	FontAsset::Register(L"log", 10, L"Orbitron");
@@ -62,7 +63,8 @@ void Game::draw() {
 void Game::drawHUD() {
 	Graphics2D::SetTransform(Mat3x2::Identity());
 	FontAsset(L"log").draw(Format(L"SCORE:", score), Vec2(5.0, 5.0), Palette::Lightgreen);
-	FontAsset(L"log").draw(Format(L"FPS:", Profiler::FPS()), Vec2(5.0, 25.0), Palette::Lightgreen);
+	FontAsset(L"log").draw(Format(L"HP:",player->getHp()), Vec2(5.0, 25.0), Palette::Lightgreen);
+	FontAsset(L"log").draw(Format(L"FPS:", Profiler::FPS()), Vec2(565.0, 455.0), Palette::Lightgreen);
 
 	//draw minimap
 	const Rect mapRect(100);
@@ -79,8 +81,8 @@ void Game::drawHUD() {
 }
 
 void Game::drawBackground() {
-	for (auto i : step(30)) {
-		RectF(RandomVec2(stageSize.x, stageSize.y).asPoint(), 40, 40).drawFrame(1.0, 0.0, Color(255, 255, 255, 127));
+	for (int i : step(10)) {
+		Line();
 	}
 	RectF(stageSize).drawFrame(0.0, 1.0, Color(Palette::Red));
 }

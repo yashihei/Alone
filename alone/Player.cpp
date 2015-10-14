@@ -30,7 +30,8 @@ Player::Player() :
 state(State::NORMAL),
 pos(0.0, 0.0),
 rad(0.0), shotRad(0.0),
-stateCount(0), fireCount(0)
+stateCount(0), fireCount(0),
+hp(0)
 {
 	shotManager = std::make_shared<ShotManager>();
 }
@@ -40,6 +41,7 @@ void Player::start() {
 	state = State::NORMAL;
 	rad = shotRad = 0.0;
 	stateCount = fireCount = 0;
+	hp = 100;
 	shotManager->clear();
 }
 
@@ -74,9 +76,17 @@ void Player::update(Game* game) {
 	}
 	fireCount++;
 	shotManager->update(game);
+
+	checkBulletHit(game);
 }
 
 void Player::checkBulletHit(Game* game) {
+	auto bulletManager = game->getBulletManager();
+	for (auto& bullet : *bulletManager) {
+		if (Circle(pos, 1.0).intersects(Circle(bullet->getPos(), bullet->getSize()))) {
+			hp--;
+		}
+	}
 }
 
 void Player::draw(Game* game) {
