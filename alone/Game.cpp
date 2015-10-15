@@ -14,6 +14,7 @@ offset(0.0, 0.0), score(0)
 	bulletManager = std::make_shared<BulletManager>();
 	enemyManager = std::make_shared<EnemyManager>();
 	effect = std::make_shared<Effect>();
+	effect->setSpeed(1.5);
 
 	player->start();
 
@@ -35,20 +36,20 @@ void Game::update() {
 	offset = Vec2(Window::Width() / 2 - player->getPos().x, Window::Height() / 2 - player->getPos().y);
 	Graphics2D::SetTransform(Mat3x2::Translate(offset));
 
+	if (Input::KeyS.pressed) {
+		Graphics2D::SetTransform(Mat3x2::Scale(2.0, Vec2(500, 500)));
+	}
+
 	effect->update();
-	if (Input::Key2.pressed) {
-		effect->add<Snow>(player->getPos().asPoint(), 10);
-	}
-	if (Input::Key3.clicked) {
-		effect->add<CrashEffect>(player->getPos());
-	}
 }
 
 void Game::createActors() {
-	if (Input::Key1.clicked) {
+	if (System::FrameCount() % 300 == 0) {
+		auto pos = RandomVec2(stageSize.x, stageSize.y);
 		auto enemy = std::make_shared<MiddleEnemy>();
-		enemy->set(RandomVec2(stageSize.x, stageSize.y));
+		enemy->set(pos);
 		enemyManager->add(enemy);
+		effect->add<CircleEffect>(pos, 50);
 	}
 }
 
@@ -81,8 +82,11 @@ void Game::drawHUD() {
 }
 
 void Game::drawBackground() {
-	for (int i : step(10)) {
-		Line();
+	for (int i = 1; i < 20; i++) {
+		double lineY = stageSize.y / 20 * i;
+		double lineX = stageSize.x / 20 * i;
+		Line(0.0, lineY, stageSize.x, lineY).draw(Color(255, 255, 255, 50));
+		Line(lineX, 0.0, lineX, stageSize.y).draw(Color(255, 255, 255, 50));
 	}
 	RectF(stageSize).drawFrame(0.0, 1.0, Color(Palette::Red));
 }

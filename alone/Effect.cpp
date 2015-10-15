@@ -12,30 +12,15 @@ bool ScreenShake::update(double timeSec) {
 	return timeMillisec < lengthMillSec;
 }
 
-Snow::Snow(const Point& pos, int count) : particles(count) {
-	for (auto& particle : particles) {
-		const Vec2 v = Circular(Random(10.0, 80.0), Random(TwoPi));
-		particle.pos = pos + v;
-		particle.v0 = v * 2.0;
-	}
-}
-
-bool Snow::update(double sec) {
-	for (const auto& particle : particles) {
-		const Vec2 pos = particle.pos + particle.v0 * sec + 0.5 * sec*sec * Vec2(0, 320);
-		Circle(pos, 1).draw(HSV(pos.y / 4.0, 0.6, 1.0).toColorF(1.0 - sec));
-	}
-
-	return sec < 1.0;
-}
-
 CircleEffect::CircleEffect(Vec2 pos, double size) :
 pos(pos),
 size(size)
 {}
 
 bool CircleEffect::update(double sec) {
-	Circle(pos, size *  sec).drawFrame();
+	for (int i : step(10)) {
+		Circle(pos, size *  sec + i).drawFrame(1, 0.0, Color(255, 0, 0, 20 * i));
+	}
 	return sec < 1.0;
 }
 

@@ -12,18 +12,6 @@ public:
 	bool update(double sec) override;
 };
 
-//from:http://play-siv3d.hateblo.jp/entry/samples/january2015
-struct Snow : IEffect {
-private:
-	struct Particle {
-		Vec2 pos, v0;
-	};
-	Array<Particle> particles;
-public:
-	Snow(const Point& pos, int count);
-	bool update(double sec) override;
-};
-
 class CircleEffect : public IEffect {
 private:
 	Vec2 pos;

@@ -67,7 +67,7 @@ void TestEnemy::draw(Game* game) {
 
 MiddleEnemy::MiddleEnemy() {
 	hp = 30;
-	size = 30.0;
+	size = 20.0;
 }
 
 void MiddleEnemy::update(Game* game) {
@@ -88,7 +88,7 @@ void MiddleEnemy::update(Game* game) {
 }
 
 void MiddleEnemy::draw(Game* game) {
-	const Polygon polygon = Geometry2D::CreateNgon(6, 50);
+	const Polygon polygon = Geometry2D::CreateNgon(6, size * 2);
 	Color c = damageCount < 10 ? Color(255, 200) : Color(Palette::Yellow).setAlpha(123);
 	polygon.rotated(rad).draw(pos, c);
 	polygon.rotated(rad).drawFrame(pos);

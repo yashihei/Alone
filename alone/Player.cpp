@@ -23,7 +23,8 @@ void Shot::update(Game* game) {
 }
 
 void Shot::draw(Game* game) {
-	Circle(pos, size).draw(Color(Palette::Orange).setAlpha(200)).drawFrame(0.0, 1.0);
+	//Triangle({ 0, -10 }, { 3, 5 }, { -3, 5 }).setCentroid(pos).rotated(rad + Radians(90)).draw(Color(255, 165, 0, 200)).drawFrame();
+	Circle(pos, size).draw(Color(255, 165, 0, 200)).drawFrame(0.0, 1.0);
 }
 
 Player::Player() :
@@ -37,7 +38,7 @@ hp(0)
 }
 
 void Player::start() {
-	pos = Vec2(Game::stageSize.x / 2, 420);
+	pos = Vec2(500, 500);
 	state = State::NORMAL;
 	rad = shotRad = 0.0;
 	stateCount = fireCount = 0;
