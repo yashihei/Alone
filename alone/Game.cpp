@@ -21,6 +21,7 @@ offset(0.0, 0.0), score(0)
 	Graphics2D::SetBlendState(BlendState::Additive);
 	FontManager::Register(L"dat/orbitron-medium.otf");
 	FontAsset::Register(L"log", 10, L"Orbitron");
+	FontAsset::Register(L"scoreLog", 15, L"Orbitron");
 }
 
 void Game::update() {
@@ -36,17 +37,13 @@ void Game::update() {
 	offset = Vec2(Window::Width() / 2 - player->getPos().x, Window::Height() / 2 - player->getPos().y);
 	Graphics2D::SetTransform(Mat3x2::Translate(offset));
 
-	if (Input::KeyS.pressed) {
-		Graphics2D::SetTransform(Mat3x2::Scale(2.0, Vec2(500, 500)));
-	}
-
 	effect->update();
 }
 
 void Game::createActors() {
 	if (System::FrameCount() % 300 == 0) {
 		auto pos = RandomVec2(stageSize.x, stageSize.y);
-		auto enemy = std::make_shared<MiddleEnemy>();
+		auto enemy = std::make_shared<TestEnemy>();
 		enemy->set(pos);
 		enemyManager->add(enemy);
 		effect->add<CircleEffect>(pos, 50);
@@ -79,6 +76,8 @@ void Game::drawHUD() {
 		Circle(enemy->getPos() / scale, 2.0).draw(Palette::Red);
 	}
 	Graphics2D::SetTransform(Mat3x2::Translate(offset));
+
+	//draw systemlog
 }
 
 void Game::drawBackground() {

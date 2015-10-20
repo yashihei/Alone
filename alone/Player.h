@@ -39,7 +39,7 @@ private:
 
 	State state;
 	Vec2 pos;
-	double rad, shotRad;
+	double rad;
 	int stateCount, fireCount;
 	int hp;
 	std::shared_ptr<ShotManager> shotManager;

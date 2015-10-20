@@ -34,6 +34,7 @@ void Enemy::update(Game* game) {
 	if (hp <= 0) {
 		kill();
 		game->getEffect()->add<CrashEffect>(pos);
+		game->getEffect()->add<ScoreEffect>(pos, 100);
 		game->addScore(100);
 	}
 }
@@ -45,16 +46,15 @@ TestEnemy::TestEnemy() {
 
 void TestEnemy::update(Game* game) {
 	Super::update(game);
-	rad += Radians(3.0);
+	rad += Radians(2.0);
 
 	auto bulletManager = game->getBulletManager();
 	const Vec2 playerPos = game->getPlayer()->getPos();
-	if (fireCount % 15 == 0) {
+	if (fireCount % 10 == 0) {
 		for (auto i : step_to(-2, 2, 1)) {
-			double shotRad = Atan2(playerPos.y - pos.y, playerPos.x - pos.x);
-			shotRad += Radians(30) * i;
+			double shotRad = rad + TwoPi / 5 * i;
 			auto bullet = std::make_shared<Bullet>();
-			bullet->set(pos, Color(255, 100, 100), shotRad, 8.0, 0.0);
+			bullet->set(pos, Color(255, 100, 100), shotRad, 3.0, 0.0);
 			bulletManager->add(bullet);
 		}
 	}

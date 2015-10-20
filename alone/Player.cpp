@@ -23,14 +23,15 @@ void Shot::update(Game* game) {
 }
 
 void Shot::draw(Game* game) {
-	//Triangle({ 0, -10 }, { 3, 5 }, { -3, 5 }).setCentroid(pos).rotated(rad + Radians(90)).draw(Color(255, 165, 0, 200)).drawFrame();
-	Circle(pos, size).draw(Color(255, 165, 0, 200)).drawFrame(0.0, 1.0);
+	for (int i : step(10)) {
+		Triangle({ 0, -15 }, { 5, 5 }, { -5, 5 }).setCentroid(pos + (vec * i) / 10).rotated(rad + Radians(90)).draw(Color(255, 165, 30, 10 * i));
+	}
 }
 
 Player::Player() :
 state(State::NORMAL),
 pos(0.0, 0.0),
-rad(0.0), shotRad(0.0),
+rad(0.0),
 stateCount(0), fireCount(0),
 hp(0)
 {
@@ -40,7 +41,7 @@ hp(0)
 void Player::start() {
 	pos = Vec2(500, 500);
 	state = State::NORMAL;
-	rad = shotRad = 0.0;
+	rad = 0.0;
 	stateCount = fireCount = 0;
 	hp = 100;
 	shotManager->clear();
@@ -68,11 +69,13 @@ void Player::update(Game* game) {
 
 	//fire
 	if (!Vec2(pad.rightThumbX, -pad.rightThumbY).isZero) {
-		shotRad = Atan2(-pad.rightThumbY, pad.rightThumbX);
-		if (fireCount % 3 == 0) {
-			auto shot = std::make_shared<Shot>();
-			shot->set(pos, Vec2(Cos(shotRad), Sin(shotRad)) * 15.0, shotRad);
-			shotManager->add(shot);
+		for (int i : {-1, 1, 0}) {
+			const double shotRad = Atan2(-pad.rightThumbY, pad.rightThumbX) + Radians(10 * i);
+			if (fireCount % 5 == 0) {
+				auto shot = std::make_shared<Shot>();
+				shot->set(pos, Vec2(Cos(shotRad), Sin(shotRad)) * 15.0, shotRad);
+				shotManager->add(shot);
+			}
 		}
 	}
 	fireCount++;
@@ -85,14 +88,14 @@ void Player::checkBulletHit(Game* game) {
 	auto bulletManager = game->getBulletManager();
 	for (auto& bullet : *bulletManager) {
 		if (Circle(pos, 1.0).intersects(Circle(bullet->getPos(), bullet->getSize()))) {
-			hp--;
+			hp -= 5;
+			bullet->kill();
 		}
 	}
 }
 
 void Player::draw(Game* game) {
-	Triangle(pos, 30.0).rotated(rad + Radians(90)).draw(Color(150, 150, 255, 122)).drawFrame();
+	Triangle(pos, 30.0).rotated(rad + HalfPi).draw(Color(150, 150, 255, 122)).drawFrame();
 	Line(pos, pos + Vec2(Cos(rad), Sin(rad)) * 1000.0).draw();
-	Line(pos, pos + Vec2(Cos(shotRad), Sin(shotRad)) * 1000.0).draw(Palette::Lightblue);
 	shotManager->draw(game);
 }

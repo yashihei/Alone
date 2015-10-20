@@ -33,3 +33,12 @@ public:
 	CrashEffect(Vec2 pos);
 	bool update(double sec) override;
 };
+
+class ScoreEffect : public IEffect {
+private:
+	Vec2 pos;
+	int score;
+public:
+	ScoreEffect(Vec2 pos, int score);
+	bool update(double sec) override;
+};
