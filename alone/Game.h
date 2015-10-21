@@ -15,7 +15,6 @@ public:
 	Game();
 	void update();
 	void draw();
-	void drawLog(String str);
 
 	std::shared_ptr<Player> getPlayer() const { return player; }
 	std::shared_ptr<BulletManager> getBulletManager() const { return bulletManager; }

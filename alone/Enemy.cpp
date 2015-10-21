@@ -5,16 +5,12 @@
 #include "Player.h"
 #include "Effect.h"
 
-Enemy::Enemy() :
-pos(0.0, 0.0),
+Enemy::Enemy(Vec2 pos) :
+pos(pos),
 rad(0.0), size(0.0),
 hp(0),
 frameCount(0), fireCount(0), damageCount(10)
 {}
-
-void Enemy::set(Vec2 pos) {
-	this->pos = pos;
-}
 
 void Enemy::update(Game* game) {
 	frameCount++; fireCount++; damageCount++;
@@ -39,7 +35,7 @@ void Enemy::update(Game* game) {
 	}
 }
 
-TestEnemy::TestEnemy() {
+TestEnemy::TestEnemy(Vec2 pos) : Super(pos) {
 	hp = 10;
 	size = 15.0;
 }
@@ -53,8 +49,7 @@ void TestEnemy::update(Game* game) {
 	if (fireCount % 10 == 0) {
 		for (auto i : step_to(-2, 2, 1)) {
 			double shotRad = rad + TwoPi / 5 * i;
-			auto bullet = std::make_shared<Bullet>();
-			bullet->set(pos, Color(255, 100, 100), shotRad, 3.0, 0.0);
+			auto bullet = std::make_shared<Bullet>(pos, Color(255, 100, 100), shotRad, 3.0, 0.0);
 			bulletManager->add(bullet);
 		}
 	}
@@ -65,7 +60,7 @@ void TestEnemy::draw(Game* game) {
 	RectF(size * 2).setCenter(pos).rotated(rad).draw(c).drawFrame();
 }
 
-MiddleEnemy::MiddleEnemy() {
+MiddleEnemy::MiddleEnemy(Vec2 pos) : Super(pos) {
 	hp = 30;
 	size = 20.0;
 }
@@ -80,9 +75,8 @@ void MiddleEnemy::update(Game* game) {
 	if (frameCount % 100 < 50) {
 		pos += Vec2(Cos(rad2), Sin(rad2)) * 3.0;
 	} else {
-		auto bullet = std::make_shared<Bullet>();
 		const double shotRad = rad2 + Radians(Random(-15.0, 15.0));
-		bullet->set(pos, Color(255, 100, 100), shotRad, Random(2.0, 7.0), 0.0);
+		auto bullet = std::make_shared<Bullet>(pos, Color(255, 100, 100), shotRad, Random(2.0, 7.0), 0.0);
 		game->getBulletManager()->add(bullet);
 	}
 }

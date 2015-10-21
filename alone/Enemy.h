@@ -6,9 +6,8 @@ class Game;
 
 class Enemy : public Actor {
 public:
-	Enemy();
+	Enemy(Vec2 pos);
 	void update(Game* game) override;
-	void set(Vec2 pos);
 
 	Vec2 getPos() const { return pos; }
 protected:
@@ -21,7 +20,7 @@ protected:
 class TestEnemy : public Enemy {
 public:
 	using Super = Enemy;
-	TestEnemy();
+	TestEnemy(Vec2 pos);
 	void update(Game* game) override;
 	void draw(Game* game) override;
 };
@@ -29,7 +28,7 @@ public:
 class MiddleEnemy : public Enemy {
 public:
 	using Super = Enemy;
-	MiddleEnemy();
+	MiddleEnemy(Vec2 pos);
 	void update(Game* game) override;
 	void draw(Game* game) override;
 };

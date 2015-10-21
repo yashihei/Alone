@@ -3,20 +3,12 @@
 #include "Game.h"
 #include "Player.h"
 
-Bullet::Bullet() :
-pos(0.0, 0.0),
-color(Palette::White),
-size(5.0), rad(0.0), speed(0.0), accel(0.0),
+Bullet::Bullet(Vec2 pos, Color color, double rad, double speed, double accel) :
+pos(pos),
+color(color),
+size(5.0), rad(rad), speed(speed), accel(accel),
 frameCount(0)
 {}
-
-void Bullet::set(Vec2 pos, Color color, double rad, double speed, double accel) {
-	this->pos = pos;
-	this->color = color;
-	this->rad = rad;
-	this->speed = speed;
-	this->accel = accel;
-}
 
 void Bullet::update(Game* game) {
 	frameCount++;

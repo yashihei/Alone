@@ -43,8 +43,7 @@ void Game::update() {
 void Game::createActors() {
 	if (System::FrameCount() % 300 == 0) {
 		auto pos = RandomVec2(stageSize.x, stageSize.y);
-		auto enemy = std::make_shared<TestEnemy>();
-		enemy->set(pos);
+		auto enemy = std::make_shared<TestEnemy>(pos);
 		enemyManager->add(enemy);
 		effect->add<CircleEffect>(pos, 50);
 	}

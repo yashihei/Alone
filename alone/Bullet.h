@@ -6,8 +6,7 @@ class Game;
 
 class Bullet : public Actor {
 public:
-	Bullet();
-	void set(Vec2 pos, Color color, double rad, double speed, double accel);
+	Bullet(Vec2 pos, Color color, double rad, double speed, double accel);
 	void update(Game* game) override;
 	void draw(Game* game) override;
 

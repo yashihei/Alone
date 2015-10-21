@@ -4,16 +4,10 @@
 #include "Bullet.h"
 #include "Enemy.h"
 
-Shot::Shot() :
-pos(0.0, 0.0), vec(0.0, 0.0),
-rad(0.0), size(5.0)
+Shot::Shot(Vec2 pos, Vec2 vec, double rad) :
+pos(pos), vec(vec),
+rad(rad), size(5.0)
 {}
-
-void Shot::set(Vec2 pos, Vec2 vec, double rad) {
-	this->pos = pos;
-	this->vec = vec;
-	this->rad = rad;
-}
 
 void Shot::update(Game* game) {
 	pos += vec;
@@ -72,8 +66,7 @@ void Player::update(Game* game) {
 		for (int i : {-1, 1, 0}) {
 			const double shotRad = Atan2(-pad.rightThumbY, pad.rightThumbX) + Radians(10 * i);
 			if (fireCount % 5 == 0) {
-				auto shot = std::make_shared<Shot>();
-				shot->set(pos, Vec2(Cos(shotRad), Sin(shotRad)) * 15.0, shotRad);
+				auto shot = std::make_shared<Shot>(pos, Vec2(Cos(shotRad), Sin(shotRad)) * 15.0, shotRad);
 				shotManager->add(shot);
 			}
 		}
