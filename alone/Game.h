@@ -1,6 +1,7 @@
 #pragma once
 #pragma warning(disable: 4100)
 #include <memory>
+#include <deque>
 #include "Actor.h"
 
 class Player;
@@ -20,7 +21,9 @@ public:
 	std::shared_ptr<BulletManager> getBulletManager() const { return bulletManager; }
 	std::shared_ptr<EnemyManager> getEnemyManager() const { return enemyManager; }
 	std::shared_ptr<Effect> getEffect() const { return effect; }
+
 	void addScore(int score) { this->score += score; }
+	void addLog(String str);
 
 	static const Size stageSize;
 private:
@@ -35,4 +38,5 @@ private:
 
 	Vec2 offset;
 	int score;
+	std::deque<String> logStrs;
 };

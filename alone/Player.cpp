@@ -83,6 +83,7 @@ void Player::checkBulletHit(Game* game) {
 		if (Circle(pos, 1.0).intersects(Circle(bullet->getPos(), bullet->getSize()))) {
 			hp -= 5;
 			bullet->kill();
+			game->addLog(L"DAMAGE!!");
 		}
 	}
 }

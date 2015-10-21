@@ -21,7 +21,8 @@ offset(0.0, 0.0), score(0)
 	Graphics2D::SetBlendState(BlendState::Additive);
 	FontManager::Register(L"dat/orbitron-medium.otf");
 	FontAsset::Register(L"log", 10, L"Orbitron");
-	FontAsset::Register(L"scoreLog", 15, L"Orbitron");
+	FontAsset::Register(L"middleLog", 15, L"Orbitron");
+	FontAsset::Register(L"smallLog", 7, L"Orbitron");
 }
 
 void Game::update() {
@@ -46,7 +47,13 @@ void Game::createActors() {
 		auto enemy = std::make_shared<TestEnemy>(pos);
 		enemyManager->add(enemy);
 		effect->add<CircleEffect>(pos, 50);
+		addLog(L"ENEMY APPEAR");
 	}
+}
+
+void Game::addLog(String str) {
+	logStrs.push_front(str);
+	if (logStrs.size() > 10) logStrs.pop_back();
 }
 
 void Game::draw() {
@@ -61,7 +68,7 @@ void Game::drawHUD() {
 	Graphics2D::SetTransform(Mat3x2::Identity());
 	FontAsset(L"log").draw(Format(L"SCORE:", score), Vec2(5.0, 5.0), Palette::Lightgreen);
 	FontAsset(L"log").draw(Format(L"HP:",player->getHp()), Vec2(5.0, 25.0), Palette::Lightgreen);
-	FontAsset(L"log").draw(Format(L"FPS:", Profiler::FPS()), Vec2(565.0, 455.0), Palette::Lightgreen);
+	FontAsset(L"log").draw(Format(L"FPS:", Profiler::FPS()), Vec2(567.0, 455.0), Palette::Lightgreen);
 
 	//draw minimap
 	const Rect mapRect(100);
@@ -74,15 +81,22 @@ void Game::drawHUD() {
 	for (auto& enemy : *enemyManager) {
 		Circle(enemy->getPos() / scale, 2.0).draw(Palette::Red);
 	}
-	Graphics2D::SetTransform(Mat3x2::Translate(offset));
 
 	//draw systemlog
+	Graphics2D::SetTransform(Mat3x2::Translate(5.0, 465));
+	int i = 0;
+	for (const auto& str : logStrs) {
+		FontAsset(L"smallLog").draw(str, Vec2(0.0, -10 * i), HSV(Palette::Lightgreen).toColorF(1.0 - 0.1 * i));
+		i++;
+	}
+
+	Graphics2D::SetTransform(Mat3x2::Translate(offset));
 }
 
 void Game::drawBackground() {
 	for (int i = 1; i < 20; i++) {
-		double lineY = stageSize.y / 20 * i;
-		double lineX = stageSize.x / 20 * i;
+		const double lineY = stageSize.y / 20 * i;
+		const double lineX = stageSize.x / 20 * i;
 		Line(0.0, lineY, stageSize.x, lineY).draw(Color(255, 255, 255, 50));
 		Line(lineX, 0.0, lineX, stageSize.y).draw(Color(255, 255, 255, 50));
 	}

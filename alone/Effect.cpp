@@ -45,7 +45,7 @@ pos(pos), score(score)
 {}
 
 bool ScoreEffect::update(double sec) {
-	FontAsset(L"scoreLog").drawCenter(Format(score), pos, HSV(Palette::Lightgreen).toColorF(1.0 - sec));
+	FontAsset(L"middleLog").drawCenter(Format(score), pos, HSV(Palette::Lightgreen).toColorF(1.0 - sec));
 
 	return sec < 1.0;
 }
