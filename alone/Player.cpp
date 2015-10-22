@@ -91,5 +91,7 @@ void Player::checkBulletHit(Game* game) {
 void Player::draw(Game* game) {
 	Triangle(pos, 30.0).rotated(rad + HalfPi).draw(Color(150, 150, 255, 122)).drawFrame();
 	Line(pos, pos + Vec2(Cos(rad), Sin(rad)) * 1000.0).draw();
+	const double stickRad = Atan2(-XInput(0).rightThumbY, XInput(0).rightThumbX);
+	Line(pos, pos + Vec2(Cos(stickRad), Sin(stickRad)) * 1000.0).draw(Palette::Lightblue );
 	shotManager->draw(game);
 }

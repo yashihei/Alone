@@ -23,10 +23,14 @@ offset(0.0, 0.0), score(0)
 	FontAsset::Register(L"log", 10, L"Orbitron");
 	FontAsset::Register(L"middleLog", 15, L"Orbitron");
 	FontAsset::Register(L"smallLog", 7, L"Orbitron");
+
+	addLog(L"READY");
 }
 
 void Game::update() {
 	if (Input::KeySpace.pressed) return;
+	if (Input::KeyF.clicked) Window::SetVirtualFullscreen({ 640, 480 });
+	if (Input::KeyG.clicked) ScreenCapture::BeginGIF(Window::Size());
 	ClearPrint();
 
 	player->update(this);
@@ -34,6 +38,7 @@ void Game::update() {
 	bulletManager->update(this);
 
 	createActors();
+	getNearEnemyPos();
 
 	offset = Vec2(Window::Width() / 2 - player->getPos().x, Window::Height() / 2 - player->getPos().y);
 	Graphics2D::SetTransform(Mat3x2::Translate(offset));
@@ -44,16 +49,25 @@ void Game::update() {
 void Game::createActors() {
 	if (System::FrameCount() % 300 == 0) {
 		auto pos = RandomVec2(stageSize.x, stageSize.y);
-		auto enemy = std::make_shared<TestEnemy>(pos);
+		auto enemy = std::make_shared<MiddleEnemy>(pos);
 		enemyManager->add(enemy);
 		effect->add<CircleEffect>(pos, 50);
-		addLog(L"ENEMY APPEAR");
+		addLog(Format(L"ENEMY APPEAR ", pos.asPoint().x, L", ", pos.asPoint().y));
 	}
 }
 
 void Game::addLog(String str) {
 	logStrs.push_front(str);
 	if (logStrs.size() > 10) logStrs.pop_back();
+}
+
+Vec2 Game::getNearEnemyPos() {
+	double distanceSize = 1000.0;
+	for (auto enemy : *enemyManager) {
+		distanceSize = Min(distanceSize, player->getPos().distanceFrom(enemy->getPos()));
+	}
+
+	return Vec2(0.0,0.0);
 }
 
 void Game::draw() {

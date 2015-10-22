@@ -1,2 +1,2 @@
 # Alone
-![](ss.gif)
+![](ss.png)

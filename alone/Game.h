@@ -24,6 +24,7 @@ public:
 
 	void addScore(int score) { this->score += score; }
 	void addLog(String str);
+	Vec2 getNearEnemyPos();
 
 	static const Size stageSize;
 private:
