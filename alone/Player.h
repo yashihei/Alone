@@ -1,22 +1,41 @@
 #pragma once
 #include <Siv3d.hpp>
+#include <deque>
 #include "Actor.h"
 
 class Game;
 
 class Shot : public Actor {
 public:
-	Shot(Vec2 pos, Vec2 vec, double rad);
+	Shot(Vec2 pos, double rad);
 	void update(Game* game) override;
-	void draw(Game* game) override;
 
 	Vec2 getPos() const { return pos; }
 	double getSize() const { return size; }
-private:
-	Vec2 pos, vec;
+protected:
+	Vec2 pos;
 	double rad, size;
 };
 using ShotManager = ActorManager<Shot>;
+
+class NormalShot : public Shot {
+public:
+	NormalShot(Vec2 pos, double rad);
+	void update(Game* game) override;
+	void draw(Game* game) override;
+private:
+};
+
+class HormingShot : public Shot {
+public:
+	HormingShot(Vec2 pos, double rad);
+	void update(Game* game) override;
+	void draw(Game* game) override;
+private:
+	std::deque<Vec2> tracks;
+	double accel;
+	bool hasTarget;
+};
 
 class Player {
 public:

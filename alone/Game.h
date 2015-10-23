@@ -24,7 +24,7 @@ public:
 
 	void addScore(int score) { this->score += score; }
 	void addLog(String str);
-	Vec2 getNearEnemyPos();
+	Vec2 getNearEnemyPos();//FIXME
 
 	static const Size stageSize;
 private:

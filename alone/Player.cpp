@@ -4,21 +4,71 @@
 #include "Bullet.h"
 #include "Enemy.h"
 
-Shot::Shot(Vec2 pos, Vec2 vec, double rad) :
-pos(pos), vec(vec),
-rad(rad), size(5.0)
-{}
+Shot::Shot(Vec2 pos, double rad) : pos(pos), rad(rad), size(5.0) {}
 
 void Shot::update(Game* game) {
-	pos += vec;
 	if (pos.x > Game::stageSize.x || pos.x < 0 || pos.y > Game::stageSize.y || pos.y < 0) {
 		kill();
 	}
 }
 
-void Shot::draw(Game* game) {
+NormalShot::NormalShot(Vec2 pos, double rad) :
+Shot(pos, rad)
+{}
+
+void NormalShot::update(Game* game) {
+	Shot::update(game);
+
+	const Vec2 vec = Vec2(Cos(rad), Sin(rad)) * 15.0;
+	pos += vec;
+}
+
+void NormalShot::draw(Game* game) {
+	const Vec2 vec = Vec2(Cos(rad), Sin(rad)) * 15.0;
 	for (int i : step(10)) {
-		Triangle({ 0, -15 }, { 5, 5 }, { -5, 5 }).setCentroid(pos + (vec * i) / 10).rotated(rad + Radians(90)).draw(Color(255, 165, 30, 10 * i));
+		Triangle({ -5, 5 }, { 0, -15 }, { 5, 5 }).setCentroid(pos + (vec * i) / 10).rotated(rad + HalfPi).draw(Color(255, 165, 30, 10 * i));
+	}
+}
+
+HormingShot::HormingShot(Vec2 pos, double rad) :
+Shot(pos, rad),
+accel(0.0)
+{}
+
+void HormingShot::update(Game* game) {
+	Shot::update(game);
+	accel += 0.2;
+
+	const Vec2 targetPos = game->getNearEnemyPos();
+	const double rad2 = Atan2(targetPos.y - pos.y, targetPos.x - pos.x);
+	const double radLimit = Radians(10);
+	if (Abs(rad2 - rad) < radLimit) {
+		rad = rad2;
+	} else {
+		if (rad2 < rad - Pi) {
+			rad -= TwoPi;
+		} else if (rad2 > rad + Pi) {
+			rad += TwoPi;
+		}
+		if (rad2 < rad) {
+			rad -= radLimit;
+		} else {
+			rad += radLimit;
+		}
+	}
+	pos += Vec2(Cos(rad), Sin(rad)) * (10.0 + accel);
+
+	tracks.push_front(pos);
+	if (tracks.size() > 15) tracks.pop_back();
+}
+
+void HormingShot::draw(Game* game) {
+	int i = 0;
+	Vec2 beforePos = pos;
+	for (auto trackPos : tracks) {
+		Line(trackPos, beforePos).draw(3.0, HSV(Color(100, 255, 100)).toColorF(1.0 - (1.0 / tracks.size()) * i));
+		i++;
+		beforePos = trackPos;
 	}
 }
 
@@ -66,9 +116,16 @@ void Player::update(Game* game) {
 		for (int i : {-1, 1, 0}) {
 			const double shotRad = Atan2(-pad.rightThumbY, pad.rightThumbX) + Radians(10 * i);
 			if (fireCount % 5 == 0) {
-				auto shot = std::make_shared<Shot>(pos, Vec2(Cos(shotRad), Sin(shotRad)) * 15.0, shotRad);
+				auto shot = std::make_shared<NormalShot>(pos, shotRad);
 				shotManager->add(shot);
 			}
+		}
+	}
+	if (pad.buttonA.clicked || Input::KeyZ.clicked) {
+		for (int i : step(10)) {
+			const double shotRad = TwoPi / 10 * i;
+			auto shot = std::make_shared<HormingShot>(pos, shotRad);
+			shotManager->add(shot);
 		}
 	}
 	fireCount++;

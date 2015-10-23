@@ -18,7 +18,7 @@ void Bullet::update(Game* game) {
 
 	speed += accel;
 	speed = Clamp(speed, 2.0, 15.0);
-	Vec2 vec = Vec2(Cos(rad) * speed, Sin(rad) * speed);
+	Vec2 vec = Vec2(Cos(rad), Sin(rad)) * speed;
 	pos += vec;
 }
 

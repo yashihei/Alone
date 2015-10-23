@@ -47,9 +47,9 @@ void Game::update() {
 }
 
 void Game::createActors() {
-	if (System::FrameCount() % 300 == 0) {
+	if (System::FrameCount() % 100 == 0) {
 		auto pos = RandomVec2(stageSize.x, stageSize.y);
-		auto enemy = std::make_shared<MiddleEnemy>(pos);
+		auto enemy = std::make_shared<TestEnemy>(pos);
 		enemyManager->add(enemy);
 		effect->add<CircleEffect>(pos, 50);
 		addLog(Format(L"ENEMY APPEAR ", pos.asPoint().x, L", ", pos.asPoint().y));
@@ -62,12 +62,17 @@ void Game::addLog(String str) {
 }
 
 Vec2 Game::getNearEnemyPos() {
-	double distanceSize = 1000.0;
+	double minDistanceSize = 1000.0;
+	Vec2 enemyPos(0.0, 0.0);
 	for (auto enemy : *enemyManager) {
-		distanceSize = Min(distanceSize, player->getPos().distanceFrom(enemy->getPos()));
+		const double distanceSize = player->getPos().distanceFrom(enemy->getPos());
+		if (minDistanceSize > distanceSize) {
+			minDistanceSize = distanceSize;
+			enemyPos = enemy->getPos();
+		}
 	}
 
-	return Vec2(0.0,0.0);
+	return enemyPos;
 }
 
 void Game::draw() {
