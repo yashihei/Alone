@@ -32,7 +32,7 @@ void NormalShot::draw(Game* game) {
 
 HormingShot::HormingShot(Vec2 pos, double rad) :
 Shot(pos, rad),
-accel(0.0)
+accel(0.0), turnRadCount(0.0)
 {}
 
 void HormingShot::update(Game* game) {
@@ -42,18 +42,21 @@ void HormingShot::update(Game* game) {
 	const Vec2 targetPos = game->getNearEnemyPos();
 	const double rad2 = Atan2(targetPos.y - pos.y, targetPos.x - pos.x);
 	const double radLimit = Radians(10);
-	if (Abs(rad2 - rad) < radLimit) {
-		rad = rad2;
-	} else {
-		if (rad2 < rad - Pi) {
-			rad -= TwoPi;
-		} else if (rad2 > rad + Pi) {
-			rad += TwoPi;
-		}
-		if (rad2 < rad) {
-			rad -= radLimit;
+	turnRadCount += radLimit;//FIXME
+	if (turnRadCount < TwoPi) {
+		if (Abs(rad2 - rad) < radLimit) {
+			rad = rad2;
 		} else {
-			rad += radLimit;
+			if (rad2 < rad - Pi) {
+				rad -= TwoPi;
+			} else if (rad2 > rad + Pi) {
+				rad += TwoPi;
+			}
+			if (rad2 < rad) {
+				rad -= radLimit;
+			} else {
+				rad += radLimit;
+			}
 		}
 	}
 	pos += Vec2(Cos(rad), Sin(rad)) * (10.0 + accel);
@@ -66,7 +69,7 @@ void HormingShot::draw(Game* game) {
 	int i = 0;
 	Vec2 beforePos = pos;
 	for (auto trackPos : tracks) {
-		Line(trackPos, beforePos).draw(3.0, HSV(Color(100, 255, 100)).toColorF(1.0 - (1.0 / tracks.size()) * i));
+		Line(beforePos, trackPos).draw(1.5, HSV(Color(100, 255, 100)).toColorF(1.0 - (1.0 / tracks.size()) * i));
 		i++;
 		beforePos = trackPos;
 	}
@@ -89,6 +92,7 @@ void Player::start() {
 	stateCount = fireCount = 0;
 	hp = 100;
 	shotManager->clear();
+	tracks.clear();
 }
 
 void Player::update(Game* game) {
@@ -102,6 +106,7 @@ void Player::update(Game* game) {
 	if (!Vec2(pad.leftThumbX, -pad.leftThumbY).isZero) {
 		rad = Atan2(-pad.leftThumbY, pad.leftThumbX);
 		pos += Vec2(Cos(rad), Sin(rad)) * 7.5;
+		tracks.push_front(pos);
 	}
 	pos = Vec2(Clamp(pos.x, 0.0, static_cast<double>(Game::stageSize.x)), Clamp(pos.y, 0.0, static_cast<double>(Game::stageSize.y)));
 
@@ -114,7 +119,7 @@ void Player::update(Game* game) {
 	//fire
 	if (!Vec2(pad.rightThumbX, -pad.rightThumbY).isZero) {
 		for (int i : {-1, 1, 0}) {
-			const double shotRad = Atan2(-pad.rightThumbY, pad.rightThumbX) + Radians(10 * i);
+			const double shotRad = Atan2(-pad.rightThumbY, pad.rightThumbX) + Radians(5 * i);
 			if (fireCount % 5 == 0) {
 				auto shot = std::make_shared<NormalShot>(pos, shotRad);
 				shotManager->add(shot);
@@ -130,6 +135,8 @@ void Player::update(Game* game) {
 	}
 	fireCount++;
 	shotManager->update(game);
+
+	if (tracks.size() > 20) tracks.pop_back();
 
 	checkBulletHit(game);
 }
@@ -147,8 +154,15 @@ void Player::checkBulletHit(Game* game) {
 
 void Player::draw(Game* game) {
 	Triangle(pos, 30.0).rotated(rad + HalfPi).draw(Color(150, 150, 255, 122)).drawFrame();
-	Line(pos, pos + Vec2(Cos(rad), Sin(rad)) * 1000.0).draw();
-	const double stickRad = Atan2(-XInput(0).rightThumbY, XInput(0).rightThumbX);
-	Line(pos, pos + Vec2(Cos(stickRad), Sin(stickRad)) * 1000.0).draw(Palette::Lightblue );
 	shotManager->draw(game);
+
+	Circle(pos, 1.0).draw(Color(255, 100, 100, 122));
+
+	int i = 0;
+	Vec2 beforePos = pos;
+	for (auto trackPos : tracks) {
+		Line(beforePos, trackPos).draw(1.0, HSV(Color(150, 150, 255)).toColorF(1.0 - (1.0 / tracks.size()) * i));
+		i++;
+		beforePos = trackPos;
+	}
 }

@@ -33,7 +33,7 @@ public:
 	void draw(Game* game) override;
 private:
 	std::deque<Vec2> tracks;
-	double accel;
+	double accel, turnRadCount;
 	bool hasTarget;
 };
 
@@ -61,4 +61,5 @@ private:
 	int stateCount, fireCount;
 	int hp;
 	std::shared_ptr<ShotManager> shotManager;
+	std::deque<Vec2> tracks;
 };

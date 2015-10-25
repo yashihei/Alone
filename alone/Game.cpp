@@ -16,21 +16,21 @@ offset(0.0, 0.0), score(0)
 	effect = std::make_shared<Effect>();
 	effect->setSpeed(1.5);
 
-	player->start();
-
 	Graphics2D::SetBlendState(BlendState::Additive);
 	FontManager::Register(L"dat/orbitron-medium.otf");
 	FontAsset::Register(L"log", 10, L"Orbitron");
 	FontAsset::Register(L"middleLog", 15, L"Orbitron");
 	FontAsset::Register(L"smallLog", 7, L"Orbitron");
 
+	player->start();
+	logStrs.clear();
 	addLog(L"READY");
 }
 
 void Game::update() {
 	if (Input::KeySpace.pressed) return;
 	if (Input::KeyF.clicked) Window::SetVirtualFullscreen({ 640, 480 });
-	if (Input::KeyG.clicked) ScreenCapture::BeginGIF(Window::Size());
+	//if (Input::KeyG.clicked) ScreenCapture::BeginGIF(Window::Size());
 	ClearPrint();
 
 	player->update(this);
@@ -38,7 +38,6 @@ void Game::update() {
 	bulletManager->update(this);
 
 	createActors();
-	getNearEnemyPos();
 
 	offset = Vec2(Window::Width() / 2 - player->getPos().x, Window::Height() / 2 - player->getPos().y);
 	Graphics2D::SetTransform(Mat3x2::Translate(offset));
@@ -47,9 +46,9 @@ void Game::update() {
 }
 
 void Game::createActors() {
-	if (System::FrameCount() % 100 == 0) {
+	if (System::FrameCount() % 300 == 0) {
 		auto pos = RandomVec2(stageSize.x, stageSize.y);
-		auto enemy = std::make_shared<TestEnemy>(pos);
+		auto enemy = std::make_shared<MiddleEnemy>(pos);
 		enemyManager->add(enemy);
 		effect->add<CircleEffect>(pos, 50);
 		addLog(Format(L"ENEMY APPEAR ", pos.asPoint().x, L", ", pos.asPoint().y));

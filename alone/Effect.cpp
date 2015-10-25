@@ -33,8 +33,7 @@ CrashEffect::CrashEffect(Vec2 pos) {
 bool CrashEffect::update(double sec) {
 	for (auto& particle : particles) {
 		particle.rad += Radians(3.0);
-		//‚±‚±‚ç‚ª•¨‘«‚è‚È‚¢
-		particle.pos += particle.vec * sec;
+		particle.pos += particle.vec * sec;//TODO:easing
 		RectF(30.0 * (1.0 - sec)).setCenter(particle.pos.asPoint()).rotated(particle.rad).draw(HSV(Palette::White).toColorF(1.0 - sec));
 	}
 	return sec < 1.0;
