@@ -43,11 +43,11 @@ TestEnemy::TestEnemy(Vec2 pos) : Super(pos) {
 
 void TestEnemy::update(Game* game) {
 	Super::update(game);
-	rad += Radians(4.0);
+	rad += Radians(2.0);
 
 	auto bulletManager = game->getBulletManager();
 	const Vec2 playerPos = game->getPlayer()->getPos();
-	if (fireCount % 2 == 0 && frameCount > 120) {
+	if (fireCount % 2 == 0 && frameCount > 60) {
 		for (auto i : step_to(-2, 2, 1)) {
 			double shotRad = rad + TwoPi / 5 * i;
 			auto bullet = std::make_shared<Bullet>(pos, Color(255, 100, 100), shotRad, 5.0, 0.0);

@@ -21,6 +21,7 @@ offset(0.0, 0.0), score(0)
 	FontAsset::Register(L"log", 10, L"Orbitron");
 	FontAsset::Register(L"middleLog", 15, L"Orbitron");
 	FontAsset::Register(L"smallLog", 7, L"Orbitron");
+	FontAsset::Register(L"title", 30, L"Orbitron");
 
 	player->start();
 	logStrs.clear();
@@ -31,6 +32,7 @@ void Game::update() {
 	if (Input::KeySpace.pressed) return;
 	if (Input::KeyF.clicked) Window::SetVirtualFullscreen({ 640, 480 });
 	//if (Input::KeyG.clicked) ScreenCapture::BeginGIF(Window::Size());
+	if (Input::KeyY.clicked) addLog(L"HELLO YOJO");
 	ClearPrint();
 
 	player->update(this);
@@ -48,7 +50,7 @@ void Game::update() {
 void Game::createActors() {
 	if (System::FrameCount() % 300 == 0) {
 		auto pos = RandomVec2(stageSize.x, stageSize.y);
-		auto enemy = std::make_shared<MiddleEnemy>(pos);
+		auto enemy = std::make_shared<TestEnemy>(pos);
 		enemyManager->add(enemy);
 		effect->add<CircleEffect>(pos, 50);
 		addLog(Format(L"ENEMY APPEAR ", pos.asPoint().x, L", ", pos.asPoint().y));
@@ -85,7 +87,6 @@ void Game::draw() {
 void Game::drawHUD() {
 	Graphics2D::SetTransform(Mat3x2::Identity());
 	FontAsset(L"log").draw(Format(L"SCORE:", score), Vec2(5.0, 5.0), Palette::Lightgreen);
-	FontAsset(L"log").draw(Format(L"HP:",player->getHp()), Vec2(5.0, 25.0), Palette::Lightgreen);
 	FontAsset(L"log").draw(Format(L"FPS:", Profiler::FPS()), Vec2(567.0, 455.0), Palette::Lightgreen);
 
 	//draw minimap

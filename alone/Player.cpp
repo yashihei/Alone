@@ -32,7 +32,7 @@ void NormalShot::draw(Game* game) {
 
 HormingShot::HormingShot(Vec2 pos, double rad) :
 Shot(pos, rad),
-accel(0.0), turnRadCount(0.0)
+accel(0.0), count(0.0)
 {}
 
 void HormingShot::update(Game* game) {
@@ -42,10 +42,10 @@ void HormingShot::update(Game* game) {
 	const Vec2 targetPos = game->getNearEnemyPos();
 	const double rad2 = Atan2(targetPos.y - pos.y, targetPos.x - pos.x);
 	const double radLimit = Radians(10);
-	turnRadCount += radLimit;//FIXME
-	if (turnRadCount < TwoPi) {
+	if (count < TwoPi) {
 		if (Abs(rad2 - rad) < radLimit) {
 			rad = rad2;
+			count += rad2;
 		} else {
 			if (rad2 < rad - Pi) {
 				rad -= TwoPi;
@@ -57,6 +57,7 @@ void HormingShot::update(Game* game) {
 			} else {
 				rad += radLimit;
 			}
+			count += radLimit;
 		}
 	}
 	pos += Vec2(Cos(rad), Sin(rad)) * (10.0 + accel);
@@ -75,12 +76,17 @@ void HormingShot::draw(Game* game) {
 	}
 }
 
+namespace {
+	static const int HP_MAX = 100;
+	static const int SHIELD_MAX = 20;
+}
+
 Player::Player() :
 state(State::NORMAL),
 pos(0.0, 0.0),
 rad(0.0),
-stateCount(0), fireCount(0),
-hp(0)
+frameCount(0), fireCount(0),
+hp(0), shield(0)
 {
 	shotManager = std::make_shared<ShotManager>();
 }
@@ -89,14 +95,15 @@ void Player::start() {
 	pos = Vec2(500, 500);
 	state = State::NORMAL;
 	rad = 0.0;
-	stateCount = fireCount = 0;
-	hp = 100;
+	frameCount = fireCount = 0;
+	hp = HP_MAX;
+	shield = SHIELD_MAX;
 	shotManager->clear();
 	tracks.clear();
 }
 
 void Player::update(Game* game) {
-	stateCount++;
+	frameCount++;
 
 	auto pad = XInput(0);
 	pad.setLeftThumbDeadZone();
@@ -106,7 +113,6 @@ void Player::update(Game* game) {
 	if (!Vec2(pad.leftThumbX, -pad.leftThumbY).isZero) {
 		rad = Atan2(-pad.leftThumbY, pad.leftThumbX);
 		pos += Vec2(Cos(rad), Sin(rad)) * 7.5;
-		tracks.push_front(pos);
 	}
 	pos = Vec2(Clamp(pos.x, 0.0, static_cast<double>(Game::stageSize.x)), Clamp(pos.y, 0.0, static_cast<double>(Game::stageSize.y)));
 
@@ -126,26 +132,24 @@ void Player::update(Game* game) {
 			}
 		}
 	}
-	if (pad.buttonA.clicked || Input::KeyZ.clicked) {
-		for (int i : step(10)) {
-			const double shotRad = TwoPi / 10 * i;
-			auto shot = std::make_shared<HormingShot>(pos, shotRad);
-			shotManager->add(shot);
-		}
-	}
 	fireCount++;
 	shotManager->update(game);
 
+	tracks.push_front(pos);
 	if (tracks.size() > 20) tracks.pop_back();
 
 	checkBulletHit(game);
+	if (frameCount % 10 == 0) shield++;
+	shield = Clamp(shield, 0, SHIELD_MAX);
+	hp = Clamp(hp, 0, HP_MAX);
 }
 
 void Player::checkBulletHit(Game* game) {
 	auto bulletManager = game->getBulletManager();
 	for (auto& bullet : *bulletManager) {
 		if (Circle(pos, 1.0).intersects(Circle(bullet->getPos(), bullet->getSize()))) {
-			hp -= 5;
+			if (shield == 0) hp -= 5;
+			else shield -= 5;
 			bullet->kill();
 			game->addLog(L"DAMAGE!!");
 		}
@@ -157,6 +161,8 @@ void Player::draw(Game* game) {
 	shotManager->draw(game);
 
 	Circle(pos, 1.0).draw(Color(255, 100, 100, 122));
+	Circle(pos, 30.0).drawArc(0.0, TwoPi * (static_cast<double>(shield) / SHIELD_MAX), 0.0, 2.0, Color(200, 200, 255, 122));
+	Circle(pos, 25.0).drawArc(0.0, TwoPi * (static_cast<double>(hp) / HP_MAX), 0.0, 2.0, Color(255, 150, 150, 122));
 
 	int i = 0;
 	Vec2 beforePos = pos;

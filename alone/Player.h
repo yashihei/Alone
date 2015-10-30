@@ -26,6 +26,7 @@ public:
 private:
 };
 
+//ŽÀ—p’iŠK‚É–³‚¢‚Ì‚Å••ˆó
 class HormingShot : public Shot {
 public:
 	HormingShot(Vec2 pos, double rad);
@@ -33,8 +34,7 @@ public:
 	void draw(Game* game) override;
 private:
 	std::deque<Vec2> tracks;
-	double accel, turnRadCount;
-	bool hasTarget;
+	double accel, count;
 };
 
 class Player {
@@ -58,8 +58,8 @@ private:
 	State state;
 	Vec2 pos;
 	double rad;
-	int stateCount, fireCount;
-	int hp;
+	int frameCount, fireCount, damageCount;
+	int hp, shield;
 	std::shared_ptr<ShotManager> shotManager;
 	std::deque<Vec2> tracks;
 };
