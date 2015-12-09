@@ -1,8 +1,4 @@
-#include "Player.h"
-
-#include "Game.h"
-#include "Bullet.h"
-#include "Enemy.h"
+#include "Interface.h"
 
 Shot::Shot(Vec2 pos, double rad) : pos(pos), rad(rad), size(5.0) {}
 
@@ -25,11 +21,14 @@ void NormalShot::update(Game* game) {
 
 void NormalShot::draw(Game* game) {
 	const Vec2 vec = Vec2(Cos(rad), Sin(rad)) * 15.0;
-	for (int i : step(10)) {
-		Triangle({ -5, 5 }, { 0, -15 }, { 5, 5 }).setCentroid(pos + (vec * i) / 10).rotated(rad + HalfPi).draw(Color(255, 165, 30, 10 * i));
+	const int n = 10;
+	for (int i : step(n)) {
+		Triangle shotPolygon({ -5, 5 }, { 0, -15 }, { 5, 5 });
+		shotPolygon.setCentroid(pos + (vec / n) * i).rotated(rad + HalfPi).draw(HSV(Color(255, 165, 30)).toColorF(0.035 * i));
 	}
 }
 
+#ifdef DEBUG
 HormingShot::HormingShot(Vec2 pos, double rad) :
 Shot(pos, rad),
 accel(0.0), count(0.0)
@@ -75,17 +74,18 @@ void HormingShot::draw(Game* game) {
 		beforePos = trackPos;
 	}
 }
+#endif
 
 namespace {
-	static const int HP_MAX = 100;
-	static const int SHIELD_MAX = 20;
+	const int HP_MAX = 100;
+	const int SHIELD_MAX = 20;
 }
 
 Player::Player() :
 state(State::NORMAL),
 pos(0.0, 0.0),
 rad(0.0),
-frameCount(0), fireCount(0),
+frameCount(0), fireCount(0), damageCount(0),
 hp(0), shield(0)
 {
 	shotManager = std::make_shared<ShotManager>();
@@ -138,8 +138,9 @@ void Player::update(Game* game) {
 	tracks.push_front(pos);
 	if (tracks.size() > 20) tracks.pop_back();
 
+	damageCount++;
 	checkBulletHit(game);
-	if (frameCount % 10 == 0) shield++;
+	if (frameCount % 10 == 0 && damageCount ) shield++;
 	shield = Clamp(shield, 0, SHIELD_MAX);
 	hp = Clamp(hp, 0, HP_MAX);
 }
@@ -151,7 +152,7 @@ void Player::checkBulletHit(Game* game) {
 			if (shield == 0) hp -= 5;
 			else shield -= 5;
 			bullet->kill();
-			game->addLog(L"DAMAGE!!");
+			game->addLog(L"DAMAGE +5");
 		}
 	}
 }
@@ -161,8 +162,8 @@ void Player::draw(Game* game) {
 	shotManager->draw(game);
 
 	Circle(pos, 1.0).draw(Color(255, 100, 100, 122));
-	Circle(pos, 30.0).drawArc(0.0, TwoPi * (static_cast<double>(shield) / SHIELD_MAX), 0.0, 2.0, Color(200, 200, 255, 122));
-	Circle(pos, 25.0).drawArc(0.0, TwoPi * (static_cast<double>(hp) / HP_MAX), 0.0, 2.0, Color(255, 150, 150, 122));
+	//Circle(pos, 30.0).drawArc(0.0, TwoPi * (static_cast<double>(shield) / SHIELD_MAX), 0.0, 2.0, Color(200, 200, 255, 122));
+	//Circle(pos, 25.0).drawArc(0.0, TwoPi * (static_cast<double>(hp) / HP_MAX), 0.0, 2.0, Color(255, 150, 150, 122));
 
 	int i = 0;
 	Vec2 beforePos = pos;

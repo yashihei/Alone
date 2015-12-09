@@ -1,9 +1,4 @@
-#include "Game.h"
-
-#include "Player.h"
-#include "Bullet.h"
-#include "Enemy.h"
-#include "Effect.h"
+#include "Interface.h"
 
 const Size Game::stageSize = Size(1000, 1000);
 
@@ -25,7 +20,7 @@ offset(0.0, 0.0), score(0)
 
 	player->start();
 	logStrs.clear();
-	addLog(L"READY");
+	addLog(L"GOOD LUCK");
 }
 
 void Game::update() {
@@ -50,7 +45,7 @@ void Game::update() {
 void Game::createActors() {
 	if (System::FrameCount() % 300 == 0) {
 		auto pos = RandomVec2(stageSize.x, stageSize.y);
-		auto enemy = std::make_shared<TestEnemy>(pos);
+		auto enemy = std::make_shared<MiddleEnemy>(pos);
 		enemyManager->add(enemy);
 		effect->add<CircleEffect>(pos, 50);
 		addLog(Format(L"ENEMY APPEAR ", pos.asPoint().x, L", ", pos.asPoint().y));
@@ -60,20 +55,6 @@ void Game::createActors() {
 void Game::addLog(String str) {
 	logStrs.push_front(str);
 	if (logStrs.size() > 10) logStrs.pop_back();
-}
-
-Vec2 Game::getNearEnemyPos() {
-	double minDistanceSize = 1000.0;
-	Vec2 enemyPos(0.0, 0.0);
-	for (auto enemy : *enemyManager) {
-		const double distanceSize = player->getPos().distanceFrom(enemy->getPos());
-		if (minDistanceSize > distanceSize) {
-			minDistanceSize = distanceSize;
-			enemyPos = enemy->getPos();
-		}
-	}
-
-	return enemyPos;
 }
 
 void Game::draw() {

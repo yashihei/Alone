@@ -1,7 +1,4 @@
-#include "Bullet.h"
-
-#include "Game.h"
-#include "Player.h"
+#include "Interface.h"
 
 Bullet::Bullet(Vec2 pos, Color color, double rad, double speed, double accel) :
 pos(pos),
@@ -23,5 +20,5 @@ void Bullet::update(Game* game) {
 }
 
 void Bullet::draw(Game* game) {
-	Circle(pos, size).draw(color.setAlpha(200));
+	Circle(pos, size).draw(color);
 }

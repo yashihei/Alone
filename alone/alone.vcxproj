@@ -163,7 +163,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="Engine\objdetect\faceAnime.xml" />
+    <Xml Include="Engine\objdetect\faceAnime.xml">
+      <SubType>Designer</SubType>
+    </Xml>
     <Xml Include="Engine\objdetect\facePhoto.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +174,7 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Interface.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

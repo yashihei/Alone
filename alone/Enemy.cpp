@@ -1,11 +1,7 @@
-#include "Enemy.h"
-
-#include "Game.h"
-#include "Bullet.h"
-#include "Player.h"
-#include "Effect.h"
+#include "Interface.h"
 
 Enemy::Enemy(Vec2 pos) :
+state(State::APPEAR),
 pos(pos),
 rad(0.0), size(0.0),
 hp(0),
@@ -57,13 +53,13 @@ void TestEnemy::update(Game* game) {
 }
 
 void TestEnemy::draw(Game* game) {
-	Color c = damageCount < 10 ? Color(255, 200) : Color(Palette::Yellow).setAlpha(123);
+	Color c = damageCount < 10 ? Color(255, 200) : Color(Palette::Yellow).setAlpha(122);
 	RectF(size * 2).setCenter(pos).rotated(rad).draw(c).drawFrame();
 }
 
 MiddleEnemy::MiddleEnemy(Vec2 pos) : Super(pos) {
-	hp = 30;
-	size = 20.0;
+	hp = 15;
+	size = 10.0;
 }
 
 void MiddleEnemy::update(Game* game) {
@@ -75,7 +71,7 @@ void MiddleEnemy::update(Game* game) {
 
 	if (frameCount % 100 < 50) {
 		pos += Vec2(Cos(rad2), Sin(rad2)) * 3.0;
-	} else {
+	} else if (frameCount % 3 == 0) {
 		const double shotRad = rad2 + Radians(Random(-15.0, 15.0));
 		auto bullet = std::make_shared<Bullet>(pos, Color(255, 100, 100), shotRad, Random(2.0, 7.0), 0.0);
 		game->getBulletManager()->add(bullet);
@@ -84,7 +80,7 @@ void MiddleEnemy::update(Game* game) {
 
 void MiddleEnemy::draw(Game* game) {
 	const Polygon polygon = Geometry2D::CreateNgon(6, size * 2);
-	Color c = damageCount < 10 ? Color(255, 200) : Color(Palette::Yellow).setAlpha(123);
+	Color c = damageCount < 10 ? Color(255, 200) : Color(Palette::Yellow).setAlpha(122);
 	polygon.rotated(rad).draw(pos, c);
 	polygon.rotated(rad).drawFrame(pos);
 }

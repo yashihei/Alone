@@ -1,6 +1,4 @@
-#include "Effect.h"
-
-#include "Game.h"
+#include "Interface.h"
 
 ScreenShake::ScreenShake(double maxOffset, double lengthMillSec) :
 maxOffset(maxOffset), lengthMillSec(lengthMillSec) {}

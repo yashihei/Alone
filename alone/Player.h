@@ -26,6 +26,7 @@ public:
 private:
 };
 
+#ifdef DEBUG
 //ŽÀ—p’iŠK‚É–³‚¢‚Ì‚Å••ˆó
 class HormingShot : public Shot {
 public:
@@ -36,14 +37,10 @@ private:
 	std::deque<Vec2> tracks;
 	double accel, count;
 };
+#endif
 
 class Player {
 public:
-	enum class State {
-		REBORN,
-		NORMAL,
-	};
-
 	Player();
 	void start();
 	void update(Game* game);
@@ -53,6 +50,11 @@ public:
 	int getHp() const { return hp; }
 	std::shared_ptr<ShotManager> getShotManager() const { return shotManager; }
 private:
+	enum class State {
+		DAMAGE,
+		NORMAL,
+	};
+
 	void checkBulletHit(Game* game);
 
 	State state;

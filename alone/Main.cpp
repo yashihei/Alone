@@ -1,7 +1,4 @@
-﻿#include <Siv3D.hpp>
-#include <memory>
-
-#include "Game.h"
+﻿#include "Interface.h"
 
 void Main()
 {

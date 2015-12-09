@@ -11,6 +11,11 @@ public:
 
 	Vec2 getPos() const { return pos; }
 protected:
+	enum class State {
+		APPEAR,
+		NORMAL,
+	};
+	State state;
 	Vec2 pos;
 	double rad, size;
 	int hp;
