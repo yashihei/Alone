@@ -26,7 +26,7 @@ offset(0.0, 0.0), score(0)
 void Game::update() {
 	if (Input::KeySpace.pressed) return;
 	if (Input::KeyF.clicked) Window::SetVirtualFullscreen({ 640, 480 });
-	//if (Input::KeyG.clicked) ScreenCapture::BeginGIF(Window::Size());
+	if (Input::KeyG.clicked) ScreenCapture::BeginGIF(Window::Size());
 	if (Input::KeyY.clicked) addLog(L"HELLO YOJO");
 	ClearPrint();
 
@@ -72,7 +72,7 @@ void Game::drawHUD() {
 
 	//draw minimap
 	const Rect mapRect(100);
-	Graphics2D::SetTransform(Mat3x2::Translate(Vec2(Window::Width() - (mapRect.w + 20), 20)));
+	Graphics2D::SetTransform(Mat3x2::Translate({Window::Width() - (mapRect.w + 20), 20}));
 	const Vec2 playerPos = player->getPos();
 	const double scale = 10.0;
 

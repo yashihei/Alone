@@ -42,11 +42,10 @@ void TestEnemy::update(Game* game) {
 	rad += Radians(2.0);
 
 	auto bulletManager = game->getBulletManager();
-	const Vec2 playerPos = game->getPlayer()->getPos();
 	if (fireCount % 2 == 0 && frameCount > 60) {
-		for (auto i : step_to(-2, 2, 1)) {
-			double shotRad = rad + TwoPi / 5 * i;
-			auto bullet = std::make_shared<Bullet>(pos, Color(255, 100, 100), shotRad, 5.0, 0.0);
+		for (auto i : step(5)) {
+			double fireRad = Radians(frameCount * 2) + TwoPi / 5 * i;
+			auto bullet = std::make_shared<Bullet>(pos, Color(255, 100, 100), fireRad, 5.0, 0.0);
 			bulletManager->add(bullet);
 		}
 	}
@@ -72,8 +71,8 @@ void MiddleEnemy::update(Game* game) {
 	if (frameCount % 100 < 50) {
 		pos += Vec2(Cos(rad2), Sin(rad2)) * 3.0;
 	} else if (frameCount % 3 == 0) {
-		const double shotRad = rad2 + Radians(Random(-15.0, 15.0));
-		auto bullet = std::make_shared<Bullet>(pos, Color(255, 100, 100), shotRad, Random(2.0, 7.0), 0.0);
+		const double fireRad = rad2 + Radians(Random(-15.0, 15.0));
+		auto bullet = std::make_shared<Bullet>(pos, Color(255, 100, 100), fireRad, Random(2.0, 7.0), 0.0);
 		game->getBulletManager()->add(bullet);
 	}
 }

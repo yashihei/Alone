@@ -110,7 +110,7 @@ void Player::update(Game* game) {
 	pad.setRightThumbDeadZone();
 
 	//move
-	if (!Vec2(pad.leftThumbX, -pad.leftThumbY).isZero) {
+	if (!Vec2(pad.leftThumbX, pad.leftThumbY).isZero) {
 		rad = Atan2(-pad.leftThumbY, pad.leftThumbX);
 		pos += Vec2(Cos(rad), Sin(rad)) * 7.5;
 	}
@@ -123,11 +123,11 @@ void Player::update(Game* game) {
 	}
 
 	//fire
-	if (!Vec2(pad.rightThumbX, -pad.rightThumbY).isZero) {
+	if (!Vec2(pad.rightThumbX, pad.rightThumbY).isZero) {
 		for (int i : {-1, 1, 0}) {
-			const double shotRad = Atan2(-pad.rightThumbY, pad.rightThumbX) + Radians(5 * i);
+			const double fireRad = Atan2(-pad.rightThumbY, pad.rightThumbX) + Radians(5 * i);
 			if (fireCount % 5 == 0) {
-				auto shot = std::make_shared<NormalShot>(pos, shotRad);
+				auto shot = std::make_shared<NormalShot>(pos, fireRad);
 				shotManager->add(shot);
 			}
 		}
@@ -140,7 +140,7 @@ void Player::update(Game* game) {
 
 	damageCount++;
 	checkBulletHit(game);
-	if (frameCount % 10 == 0 && damageCount ) shield++;
+	if (frameCount % 10 == 0 && damageCount) shield++;
 	shield = Clamp(shield, 0, SHIELD_MAX);
 	hp = Clamp(hp, 0, HP_MAX);
 }
